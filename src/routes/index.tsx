@@ -158,12 +158,12 @@ function QuizPage() {
       {!loading && !error && phase === "intro" && (
         <section className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
           <div className="animate-float text-5xl">🎀</div>
-          <h1 className="font-display text-6xl leading-none tracking-tight gradient-text">
-            수지
+          <h1 className="font-display leading-tight tracking-tight">
+            <span className="block text-6xl gradient-text">수지</span>
+            <span className="block text-xl text-secondary-foreground mt-1">
+              수능지리 O/X 기출 퀴즈 ✨
+            </span>
           </h1>
-          <p className="font-display text-lg text-secondary-foreground">
-            수능지리 O/X 기출 퀴즈 ✨
-          </p>
 
           <div className="glass-card relative w-full max-w-xs overflow-hidden p-5 text-left">
             <div className="absolute -right-3 -top-3 text-4xl opacity-20">💝</div>
