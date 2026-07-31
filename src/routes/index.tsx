@@ -164,11 +164,21 @@ function QuizPage() {
           <p className="font-display text-lg text-secondary-foreground">
             수능지리 O/X 기출 퀴즈 ✨
           </p>
-          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-            하루 20선지, 수능지리 1등급으로 가는 가장 가벼운 발걸음 🎀
-          </p>
 
-          <ul className="mt-1 flex w-full max-w-xs flex-col gap-2.5">
+          <div className="glass-card relative w-full max-w-xs overflow-hidden p-5 text-left">
+            <div className="absolute -right-3 -top-3 text-4xl opacity-20">💝</div>
+            <p className="font-display text-[15px] leading-relaxed text-foreground">
+              현직 한의사 아빠가 고3 딸을 위해 직접 만든{" "}
+              <span className="gradient-text">“수”</span>능세계
+              <span className="gradient-text">“지”</span>리 퀴즈
+            </p>
+            <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+              딸의 향상을 바라는 마음으로, 최신 기출 선지만 정밀하게 가공하여
+              담았습니다. ✨
+            </p>
+          </div>
+
+          <ul className="flex w-full max-w-xs flex-col gap-2.5">
             {BADGES.map((b) => (
               <li
                 key={b.text}
