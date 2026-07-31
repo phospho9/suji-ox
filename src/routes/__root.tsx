@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
+      { name: "description", content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
+      { property: "og:description", content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
+      { name: "twitter:description", content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/96d1cc06-7a7c-4d6f-b646-da22adb515dd/id-preview-f75ad616--2ba5fea4-9265-4df4-bb5a-f04f04ae5e59.lovable.app-1785491728604.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/96d1cc06-7a7c-4d6f-b646-da22adb515dd/id-preview-f75ad616--2ba5fea4-9265-4df4-bb5a-f04f04ae5e59.lovable.app-1785491728604.png" },
     ],
     links: [
       {
