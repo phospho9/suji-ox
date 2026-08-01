@@ -29,6 +29,7 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요.",
       },
+      { name: "naver-site-verification", content: "9f791a60b282df2371e7b6f2ddde004a00b213c6" },
     ],
   }),
   component: QuizPage,
