@@ -103,7 +103,51 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://suji.haniw.com/#organization",
+              name: "수지 SUJI",
+              alternateName: "SUJI",
+              url: "https://suji.haniw.com/",
+              description:
+                "현직 한의사 아빠가 고3 딸을 위해 만든 수능 세계지리 O/X 기출 퀴즈 서비스입니다.",
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://suji.haniw.com/#website",
+              name: "수지 SUJI | 수능지리 O/X 기출 퀴즈",
+              url: "https://suji.haniw.com/",
+              inLanguage: "ko-KR",
+              description:
+                "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요.",
+              publisher: { "@id": "https://suji.haniw.com/#organization" },
+            },
+            {
+              "@type": "LearningResource",
+              "@id": "https://suji.haniw.com/#quiz",
+              name: "수능 세계지리 O/X 기출 퀴즈",
+              url: "https://suji.haniw.com/",
+              inLanguage: "ko-KR",
+              learningResourceType: "Quiz",
+              educationalLevel: "고등학교 3학년",
+              educationalUse: "practice",
+              about: { "@type": "Thing", name: "수능 세계지리" },
+              teaches: "수능 세계지리 기출 선지 판별 및 개념 복습",
+              isAccessibleForFree: true,
+              provider: { "@id": "https://suji.haniw.com/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
