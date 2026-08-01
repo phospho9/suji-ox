@@ -80,6 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
       { name: "description", content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요." },
       { name: "author", content: "Lovable" },
+      { name: "google-site-verification", content: "fXKwsW4J4eskH9NmhSHK61flkKL8Rh0O0H8C2xIS9lo" },
+
       { property: "og:title", content: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
       { property: "og:description", content: "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요." },
       { property: "og:type", content: "website" },
