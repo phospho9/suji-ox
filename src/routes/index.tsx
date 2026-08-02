@@ -2,18 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { Confetti, Sparkles } from "@/components/Confetti";
+import { useAuth } from "@/hooks/useAuth";
 import { playCorrect, playTap, playWrong } from "@/lib/sound";
+import { fetchQuestions, submitProgress, type Question } from "@/lib/quiz-api";
 
-const API_URL = "https://world-geography-test.acumoxa.workers.dev/api/questions";
-
-type Question = {
-  id: number;
-  statement: string;
-  is_correct: number;
-  unit: string;
-  explanation: string;
-  source: string;
-};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,6 +58,7 @@ function praise(rate: number) {
 }
 
 function QuizPage() {
+  const { user, signingIn, signInWithGoogle, signOut } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -79,10 +72,8 @@ function QuizPage() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("bad response");
-      const data = (await res.json()) as Question[];
-      setQuestions(Array.isArray(data) ? data.slice(0, 20) : []);
+      const data = await fetchQuestions(user?.id);
+      setQuestions(data.slice(0, 20));
       setIndex(0);
       setAnswers([]);
       setPicked(null);
@@ -109,10 +100,15 @@ function QuizPage() {
 
   function choose(value: boolean) {
     if (picked !== null || !current) return;
+    const correct = value === (current.is_correct === 1);
     setPicked(value);
     setAnswers((prev) => [...prev, value]);
     setBurst((n) => n + 1);
-    if (value === (current.is_correct === 1)) playCorrect();
+    // 백그라운드 전송 — UI 전환을 막지 않음
+    if (user) {
+      submitProgress({ userId: user.id, questionId: current.id, isCorrect: correct });
+    }
+    if (correct) playCorrect();
     else playWrong();
   }
 
@@ -122,6 +118,7 @@ function QuizPage() {
     else setIndex((i) => i + 1);
     setPicked(null);
   }
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-14 pt-7">
@@ -133,9 +130,27 @@ function QuizPage() {
           </span>
           <span className="font-display text-xl tracking-tight gradient-text">수지 SUJI</span>
         </div>
-        <span className="rounded-full border border-primary/25 bg-gradient-to-r from-secondary to-lavender/40 px-3 py-1.5 text-[11px] font-bold text-secondary-foreground shadow-soft">
-          suji.haniw.com 💖
-        </span>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="max-w-28 truncate rounded-full border border-primary/25 bg-gradient-to-r from-secondary to-lavender/40 px-3 py-1.5 text-[11px] font-bold text-secondary-foreground shadow-soft">
+              {user.displayName} 💖
+            </span>
+            <button
+              onClick={() => void signOut()}
+              className="rounded-full border border-primary/20 px-3 py-1.5 text-[11px] font-bold text-muted-foreground transition active:scale-95"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => void signInWithGoogle()}
+            disabled={signingIn}
+            className="rounded-full btn-gradient px-4 py-2 text-[11px] font-bold transition active:scale-95 disabled:opacity-60"
+          >
+            {signingIn ? "연결 중..." : "Google 로그인 💖"}
+          </button>
+        )}
       </header>
 
       {loading && <div className="flex flex-1 items-center justify-center">{<Spinner />}</div>}
@@ -222,7 +237,17 @@ function QuizPage() {
             </div>
           </div>
 
-          <div className="glass-card flex min-h-44 items-center p-6">
+          <div className="glass-card flex min-h-44 flex-col justify-center gap-3 p-6">
+            {current.type === "review" && (
+              <span className="w-fit rounded-full bg-peach/70 px-3 py-1 text-[11px] font-bold text-foreground/80">
+                💡 오늘의 복습
+              </span>
+            )}
+            {current.type === "new" && (
+              <span className="w-fit rounded-full bg-mint/60 px-3 py-1 text-[11px] font-bold text-mint-foreground">
+                새로운 기출
+              </span>
+            )}
             <p className="text-xl font-bold leading-relaxed">{current.statement}</p>
           </div>
 
