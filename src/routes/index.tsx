@@ -237,7 +237,17 @@ function QuizPage() {
             </div>
           </div>
 
-          <div className="glass-card flex min-h-44 items-center p-6">
+          <div className="glass-card flex min-h-44 flex-col justify-center gap-3 p-6">
+            {current.type === "review" && (
+              <span className="w-fit rounded-full bg-peach/70 px-3 py-1 text-[11px] font-bold text-foreground/80">
+                💡 오늘의 복습
+              </span>
+            )}
+            {current.type === "new" && (
+              <span className="w-fit rounded-full bg-mint/60 px-3 py-1 text-[11px] font-bold text-mint-foreground">
+                새로운 기출
+              </span>
+            )}
             <p className="text-xl font-bold leading-relaxed">{current.statement}</p>
           </div>
 
