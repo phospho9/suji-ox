@@ -58,6 +58,7 @@ function praise(rate: number) {
 }
 
 function QuizPage() {
+  const { user, signingIn, signInWithGoogle, signOut } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -71,10 +72,8 @@ function QuizPage() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("bad response");
-      const data = (await res.json()) as Question[];
-      setQuestions(Array.isArray(data) ? data.slice(0, 20) : []);
+      const data = await fetchQuestions(user?.id);
+      setQuestions(data.slice(0, 20));
       setIndex(0);
       setAnswers([]);
       setPicked(null);
@@ -101,10 +100,15 @@ function QuizPage() {
 
   function choose(value: boolean) {
     if (picked !== null || !current) return;
+    const correct = value === (current.is_correct === 1);
     setPicked(value);
     setAnswers((prev) => [...prev, value]);
     setBurst((n) => n + 1);
-    if (value === (current.is_correct === 1)) playCorrect();
+    // 백그라운드 전송 — UI 전환을 막지 않음
+    if (user) {
+      submitProgress({ userId: user.id, questionId: current.id, isCorrect: correct });
+    }
+    if (correct) playCorrect();
     else playWrong();
   }
 
@@ -114,6 +118,7 @@ function QuizPage() {
     else setIndex((i) => i + 1);
     setPicked(null);
   }
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-14 pt-7">
