@@ -130,9 +130,27 @@ function QuizPage() {
           </span>
           <span className="font-display text-xl tracking-tight gradient-text">수지 SUJI</span>
         </div>
-        <span className="rounded-full border border-primary/25 bg-gradient-to-r from-secondary to-lavender/40 px-3 py-1.5 text-[11px] font-bold text-secondary-foreground shadow-soft">
-          suji.haniw.com 💖
-        </span>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="max-w-28 truncate rounded-full border border-primary/25 bg-gradient-to-r from-secondary to-lavender/40 px-3 py-1.5 text-[11px] font-bold text-secondary-foreground shadow-soft">
+              {user.displayName} 💖
+            </span>
+            <button
+              onClick={() => void signOut()}
+              className="rounded-full border border-primary/20 px-3 py-1.5 text-[11px] font-bold text-muted-foreground transition active:scale-95"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => void signInWithGoogle()}
+            disabled={signingIn}
+            className="rounded-full btn-gradient px-4 py-2 text-[11px] font-bold transition active:scale-95 disabled:opacity-60"
+          >
+            {signingIn ? "연결 중..." : "Google 로그인 💖"}
+          </button>
+        )}
       </header>
 
       {loading && <div className="flex flex-1 items-center justify-center">{<Spinner />}</div>}
