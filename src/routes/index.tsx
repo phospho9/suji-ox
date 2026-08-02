@@ -2,18 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { Confetti, Sparkles } from "@/components/Confetti";
+import { useAuth } from "@/hooks/useAuth";
 import { playCorrect, playTap, playWrong } from "@/lib/sound";
+import { fetchQuestions, submitProgress, type Question } from "@/lib/quiz-api";
 
-const API_URL = "https://world-geography-test.acumoxa.workers.dev/api/questions";
-
-type Question = {
-  id: number;
-  statement: string;
-  is_correct: number;
-  unit: string;
-  explanation: string;
-  source: string;
-};
 
 export const Route = createFileRoute("/")({
   head: () => ({
