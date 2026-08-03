@@ -181,6 +181,19 @@ function QuizPage() {
             </span>
           </h1>
 
+          <div className="w-full max-w-xs space-y-3 text-left">
+            <h2 className="font-display text-2xl leading-tight text-foreground">
+              아는 건 스킵하고,
+              <br />
+              <span className="gradient-text">모르는 건 내 머릿속에 저장!</span> 💾
+            </h2>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              로그인 없이 가볍게 풀어도 좋아요. 하지만 로그인하면 AI가 내 약점을
+              분석해서 까먹을 때쯤 딱 맞춰 다시 알려준답니다. 시간 없는 고3을 위한
+              세계지리 1등급 비밀 무기, 지금 시작해 볼까요? ✨
+            </p>
+          </div>
+
           <div className="glass-card relative w-full max-w-xs overflow-hidden p-5 text-left">
             <div className="absolute -right-3 -top-3 text-4xl opacity-20">💝</div>
             <p className="font-display text-[15px] leading-relaxed text-foreground">
@@ -206,15 +219,36 @@ function QuizPage() {
             ))}
           </ul>
 
-          <button
-            onClick={() => {
-              playTap();
-              void load();
-            }}
-            className="mt-3 w-full max-w-xs animate-pulse-soft rounded-3xl btn-gradient px-6 py-4 font-display text-lg transition active:scale-95"
-          >
-            🌸 20문항 O/X 퀴즈 시작하기
-          </button>
+          {user ? (
+            <button
+              onClick={() => {
+                playTap();
+                void load();
+              }}
+              className="mt-3 w-full max-w-xs animate-pulse-soft rounded-3xl btn-gradient px-6 py-4 font-display text-lg transition active:scale-95"
+            >
+              🌸 20문항 O/X 퀴즈 시작하기
+            </button>
+          ) : (
+            <div className="flex w-full max-w-xs flex-col gap-3 mt-3">
+              <button
+                onClick={() => void signInWithGoogle()}
+                disabled={signingIn}
+                className="w-full animate-pulse-soft rounded-3xl btn-gradient px-6 py-4 font-display text-lg transition active:scale-95 disabled:opacity-60"
+              >
+                {signingIn ? "연결 중..." : "AI 복습 모드로 시작하기 🚀"}
+              </button>
+              <button
+                onClick={() => {
+                  playTap();
+                  void load();
+                }}
+                className="w-full rounded-3xl border border-primary/20 bg-white/40 px-6 py-3.5 text-sm font-bold text-muted-foreground backdrop-blur-sm transition hover:bg-white/60 active:scale-95"
+              >
+                로그인 없이 그냥 풀기
+              </button>
+            </div>
+          )}
         </section>
       )}
 
