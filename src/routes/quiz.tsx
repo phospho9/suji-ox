@@ -36,15 +36,17 @@ function QuizRoutePage() {
   const [error, setError] = useState(false);
   const [runKey, setRunKey] = useState(0);
 
+  const userId = user?.id ?? null;
+
   useEffect(() => {
     if (!ready) return;
     let cancelled = false;
     setLoading(true);
     setError(false);
     const task =
-      mode === "incorrect" && user
-        ? fetchIncorrectQuestions(user.id)
-        : fetchQuestions(user?.id ?? null);
+      mode === "incorrect" && userId
+        ? fetchIncorrectQuestions(userId)
+        : fetchQuestions(userId);
     void task
       .then((data) => {
         if (cancelled) return;
@@ -55,7 +57,7 @@ function QuizRoutePage() {
     return () => {
       cancelled = true;
     };
-  }, [mode, user, ready, runKey]);
+  }, [mode, userId, ready, runKey]);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-16 pt-7">
