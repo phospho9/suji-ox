@@ -46,7 +46,7 @@ function StatCard({
   label: string;
   value: number | string;
   suffix?: string;
-  badge?: string;
+  badge?: string | undefined;
   tone: string;
 }) {
   return (
