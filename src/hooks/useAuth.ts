@@ -36,7 +36,13 @@ export function useAuth() {
 
     const handle = (session: Session | null, shouldSync: boolean) => {
       const next = toQuizUser(session);
-      setUser(next);
+      // 동일한 사용자면 객체 참조를 유지해 화면이 다시 로딩되지 않도록 한다
+      setUser((prev) => {
+        if (prev && next && prev.id === next.id && prev.displayName === next.displayName) {
+          return prev;
+        }
+        return next;
+      });
       if (next && shouldSync && !synced.has(next.id)) {
         synced.add(next.id);
         // 로그인 성공 직후 백엔드에 사용자 정보 동기화
