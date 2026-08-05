@@ -19,7 +19,8 @@ export function ReportIssueButton({
   className,
 }: {
   questionId: number;
-  userId?: string | null;
+  userId?: string | null | undefined;
+  className?: string | undefined;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
