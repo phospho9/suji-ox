@@ -51,19 +51,19 @@ function LandingPage() {
     <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-5 pb-2.5 pt-3">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-hidden">
         <header className="shrink-0 space-y-1.5 text-center">
-          <h1 className="font-display text-[18px] leading-snug tracking-tight sm:text-[22px]">
+          <h1 className="font-display text-[18px] leading-snug tracking-tight text-foreground sm:text-[22px]">
             <span className="block text-[11px] font-bold text-muted-foreground sm:text-xs">
               현직 한의사 아빠가 고3 딸을 위해 직접 만든
             </span>
-            <span className="gradient-text">
+            <span className="block">
               <span className="relative inline-block font-black">
-                수
-                <span className="absolute -bottom-0.5 left-0 h-1.5 w-full rounded-full bg-primary/30" />
+                <span className="relative z-10 text-[#E0247D]">수</span>
+                <span className="absolute -bottom-0.5 left-0 -z-10 h-1.5 w-full rounded-full bg-[#E0247D]/25" />
               </span>
               능세계
               <span className="relative inline-block font-black">
-                지
-                <span className="absolute -bottom-0.5 left-0 h-1.5 w-full rounded-full bg-primary/30" />
+                <span className="relative z-10 text-[#E0247D]">지</span>
+                <span className="absolute -bottom-0.5 left-0 -z-10 h-1.5 w-full rounded-full bg-[#E0247D]/25" />
               </span>
               리 퀴즈
             </span>
