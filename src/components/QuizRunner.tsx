@@ -160,6 +160,9 @@ export function QuizRunner({
           </span>
         )}
         <p className="text-lg font-bold leading-relaxed sm:text-xl">{current.statement}</p>
+        <div className="flex justify-end">
+          <ReportIssueButton questionId={current.id} userId={userId} />
+        </div>
       </div>
 
       <div className="relative mx-auto mt-6 grid w-full max-w-md grid-cols-2 gap-4">
