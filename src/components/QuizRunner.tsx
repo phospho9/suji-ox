@@ -110,7 +110,10 @@ export function QuizRunner({
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {q.explanation}
                 </p>
-                <p className="mt-2 text-[11px] text-muted-foreground">출처 · {q.source}</p>
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  <p className="text-[11px] text-muted-foreground">출처 · {q.source}</p>
+                  <ReportIssueButton questionId={q.id} userId={userId} />
+                </div>
               </li>
             );
           })}
