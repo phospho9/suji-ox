@@ -151,3 +151,22 @@ export function submitProgress(input: {
     // 학습 흐름을 방해하지 않도록 조용히 무시
   });
 }
+
+/** POST /api/reports — 문제 오류 제보 */
+export async function submitReport(input: {
+  questionId: number;
+  userId?: string | null;
+  reason: string;
+}): Promise<void> {
+  const res = await fetch(`${BASE_URL}/api/reports`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      question_id: input.questionId,
+      user_id: input.userId ?? null,
+      reason: input.reason.trim().slice(0, 1000),
+    }),
+  });
+  if (!res.ok) throw new Error("failed to submit report");
+}
+

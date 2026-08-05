@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Confetti, Sparkles } from "@/components/Confetti";
+import { ReportIssueButton } from "@/components/ReportIssueDialog";
 import { submitProgress, type Question } from "@/lib/quiz-api";
 
 function praise(rate: number) {
