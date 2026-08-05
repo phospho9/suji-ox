@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { DisclaimerFooter } from "@/components/DisclaimerFooter";
 import { Toaster } from "@/components/ui/sonner";
 import {
   Outlet,
@@ -179,6 +180,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <DisclaimerFooter />
       <Toaster position="top-center" />
     </QueryClientProvider>
   );

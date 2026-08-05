@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Confetti, Sparkles } from "@/components/Confetti";
+import { ReportIssueButton } from "@/components/ReportIssueDialog";
 import { submitProgress, type Question } from "@/lib/quiz-api";
 
 function praise(rate: number) {
@@ -109,7 +110,10 @@ export function QuizRunner({
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {q.explanation}
                 </p>
-                <p className="mt-2 text-[11px] text-muted-foreground">출처 · {q.source}</p>
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  <p className="text-[11px] text-muted-foreground">출처 · {q.source}</p>
+                  <ReportIssueButton questionId={q.id} userId={userId} />
+                </div>
               </li>
             );
           })}
@@ -156,6 +160,9 @@ export function QuizRunner({
           </span>
         )}
         <p className="text-lg font-bold leading-relaxed sm:text-xl">{current.statement}</p>
+        <div className="flex justify-end">
+          <ReportIssueButton questionId={current.id} userId={userId} />
+        </div>
       </div>
 
       <div className="relative mx-auto mt-6 grid w-full max-w-md grid-cols-2 gap-4">
