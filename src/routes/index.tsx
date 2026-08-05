@@ -1,22 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { AppNav } from "@/components/AppNav";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
+      { title: "수능 세계지리 1등급 O/X 퀴즈 | 수지 SUJI" },
       {
         name: "description",
         content:
-          "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요.",
+          "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 에빙하우스 망각곡선 자동 복습과 단원별 정확도 분석까지 한 화면에서.",
       },
-      { property: "og:title", content: "수지 SUJI | 수능지리 O/X 기출 퀴즈" },
+      { property: "og:title", content: "수능 세계지리 1등급 O/X 퀴즈 | 수지 SUJI" },
       {
         property: "og:description",
         content:
-          "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 평가원·교육청 최신 기출을 즉시 해설과 오답노트로 복습해요.",
+          "기출 O/X 변환 퀴즈, 망각곡선 자동 복습, 단원별·추세 분석을 제공하는 수능 세계지리 학습 서비스.",
       },
       { name: "naver-site-verification", content: "9f791a60b282df2371e7b6f2ddde004a00b213c6" },
     ],
@@ -24,98 +23,91 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
-const BADGES = [
-  { icon: "🎯", text: "평가원/교육청 최신 기출 완전 분석", tone: "bg-secondary/80" },
-  { icon: "⚡", text: "자료 해석 문제도 1초 만에 O/X 변환", tone: "bg-mint/60" },
-  { icon: "⏱️", text: "쉬는 시간 3분 만에 20문제 완파", tone: "bg-peach/60" },
+const FEATURES = [
+  {
+    icon: "⚡",
+    title: "기출 O/X 변환 퀴즈",
+    desc: "평가원·교육청 최신 기출 선지를 O/X로 초고속 판별",
+    tone: "bg-secondary/70",
+  },
+  {
+    icon: "🧠",
+    title: "에빙하우스 망각곡선",
+    desc: "까먹을 때쯤 자동 복습 배치, 약점만 콕 집어 반복",
+    tone: "bg-mint/50",
+  },
+  {
+    icon: "📊",
+    title: "단원별·추세 분석",
+    desc: "단원 정확도와 성장 추세를 그래프로 한눈에 확인",
+    tone: "bg-peach/50",
+  },
 ];
 
 function LandingPage() {
   const { user, signingIn, signInWithGoogle } = useAuth();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-14 pt-7">
-      <AppNav />
+    <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-5 pb-3 pt-4">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-hidden">
+        <header className="shrink-0 text-center">
+          <h1 className="font-display text-[22px] leading-snug tracking-tight">
+            <span className="gradient-text">수능 세계지리 1등급 O/X 퀴즈</span>
+            <span className="mt-0.5 block text-[11px] font-bold text-muted-foreground">
+              suji.haniw.com 💖
+            </span>
+          </h1>
+        </header>
 
-      <section className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-        <div className="animate-float text-5xl">🎀</div>
-        <h1 className="font-display leading-tight tracking-tight">
-          <span className="block text-6xl gradient-text">수지</span>
-          <span className="mt-1 block text-xl text-secondary-foreground">
-            수능지리 O/X 기출 퀴즈 ✨
-          </span>
-        </h1>
-
-        <div className="w-full max-w-xs space-y-3 text-left">
-          <h2 className="font-display text-2xl leading-tight text-foreground">
-            아는 건 스킵하고,
-            <br />
-            <span className="gradient-text">모르는 건 내 머릿속에 저장!</span> 💾
-          </h2>
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            로그인 없이 가볍게 풀어도 좋아요. 하지만 로그인하면 AI가 내 약점을 분석해서 까먹을
-            때쯤 딱 맞춰 다시 알려준답니다. 시간 없는 고3을 위한 세계지리 1등급 비밀 무기, 지금
-            시작해 볼까요? ✨
-          </p>
-        </div>
-
-        <div className="glass-card relative w-full max-w-xs overflow-hidden p-5 text-left">
-          <div className="absolute -right-3 -top-3 text-4xl opacity-20">💝</div>
-          <p className="font-display text-[15px] leading-relaxed text-foreground">
-            현직 한의사 아빠가 고3 딸을 위해 직접 만든{" "}
-            <span className="gradient-text">“수”</span>능세계
-            <span className="gradient-text">“지”</span>리 퀴즈
-          </p>
-          <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-            딸의 향상을 바라는 마음으로, 최신 기출 선지만 정밀하게 가공하여 담았습니다. ✨
-          </p>
-        </div>
-
-        <ul className="flex w-full max-w-xs flex-col gap-2.5">
-          {BADGES.map((b) => (
-            <li
-              key={b.text}
-              className={`flex items-center gap-2.5 rounded-2xl ${b.tone} px-4 py-3 text-left text-[13px] font-bold text-foreground/80 shadow-soft backdrop-blur-sm`}
+        <section className="flex min-h-0 flex-1 flex-col justify-center gap-2.5 py-3">
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className={`flex items-center gap-3 rounded-3xl ${f.tone} px-4 py-3 shadow-soft backdrop-blur-sm`}
             >
-              <span className="text-base">{b.icon}</span>
-              {b.text}
-            </li>
+              <span className="shrink-0 text-xl">{f.icon}</span>
+              <div className="min-w-0">
+                <p className="truncate font-display text-[15px] text-foreground">{f.title}</p>
+                <p className="text-[11px] leading-snug text-muted-foreground">{f.desc}</p>
+              </div>
+            </div>
           ))}
-        </ul>
+        </section>
 
-        {user ? (
-          <div className="mt-3 flex w-full max-w-xs flex-col gap-3">
+        <div className="shrink-0 space-y-2">
+          <Link
+            to="/quiz"
+            className="block w-full animate-pulse-soft rounded-3xl btn-gradient py-4 text-center font-display text-lg transition active:scale-95"
+          >
+            🌸 지금 바로 퀴즈 시작하기
+          </Link>
+          {user ? (
             <Link
               to="/dashboard"
-              className="w-full animate-pulse-soft rounded-3xl btn-gradient px-6 py-4 text-center font-display text-lg transition active:scale-95"
+              className="block w-full rounded-2xl border border-border bg-card/50 py-2.5 text-center text-xs font-bold text-muted-foreground backdrop-blur-sm transition active:scale-95"
             >
               📊 내 대시보드 보기
             </Link>
-            <Link
-              to="/quiz"
-              className="w-full rounded-3xl border border-border bg-card/50 px-6 py-3.5 text-center text-sm font-bold text-muted-foreground backdrop-blur-sm transition active:scale-95"
-            >
-              🌸 20문항 O/X 퀴즈 시작하기
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-3 flex w-full max-w-xs flex-col gap-3">
+          ) : (
             <button
               onClick={() => void signInWithGoogle()}
               disabled={signingIn}
-              className="w-full animate-pulse-soft rounded-3xl btn-gradient px-6 py-4 font-display text-lg transition active:scale-95 disabled:opacity-60"
+              className="w-full rounded-2xl border border-border bg-card/50 py-2.5 text-center text-xs font-bold text-muted-foreground backdrop-blur-sm transition active:scale-95 disabled:opacity-60"
             >
-              {signingIn ? "연결 중..." : "AI 복습 모드로 시작하기 🚀"}
+              {signingIn ? "연결 중..." : "로그인하면 AI 복습 모드까지 🚀"}
             </button>
-            <Link
-              to="/quiz"
-              className="w-full rounded-3xl border border-border bg-card/50 px-6 py-3.5 text-center text-sm font-bold text-muted-foreground backdrop-blur-sm transition active:scale-95"
-            >
-              로그인 없이 그냥 풀기
-            </Link>
-          </div>
-        )}
-      </section>
+          )}
+        </div>
+
+        <footer className="shrink-0 pt-2.5">
+          <p className="text-[11px] leading-snug text-[#888888]">
+            본 서비스의 지문 및 해설은 수능·모의평가 기출문제를 기반으로 AI 분석을 통해 2차
+            가공(O/X 변환)된 비영리 학습 자료입니다. AI 변환 특성상 일부 오탈자나 해석상의 차이가
+            존재할 수 있습니다. 오류 발견 시 [🚨 오류 제보] 버튼을 통해 적극적인 피드백
+            부탁드립니다.
+          </p>
+        </footer>
+      </div>
     </main>
   );
 }
