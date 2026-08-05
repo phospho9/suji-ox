@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { AppNav } from "@/components/AppNav";
+import { ReportIssueButton } from "@/components/ReportIssueDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchIncorrectQuestions } from "@/lib/quiz-api";
 
