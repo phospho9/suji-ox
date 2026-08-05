@@ -48,24 +48,41 @@ function LandingPage() {
   const { user, signingIn, signInWithGoogle } = useAuth();
 
   return (
-    <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-5 pb-3 pt-4">
+    <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-5 pb-2.5 pt-3">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-hidden">
-        <header className="shrink-0 text-center">
-          <h1 className="font-display text-[22px] leading-snug tracking-tight">
-            <span className="gradient-text">수능 세계지리 1등급 O/X 퀴즈</span>
-            <span className="mt-0.5 block text-[11px] font-bold text-muted-foreground">
-              suji.haniw.com 💖
+        <header className="shrink-0 space-y-1.5 text-center">
+          <h1 className="font-display text-[18px] leading-snug tracking-tight sm:text-[22px]">
+            <span className="block text-[11px] font-bold text-muted-foreground sm:text-xs">
+              현직 한의사 아빠가 고3 딸을 위해 직접 만든
+            </span>
+            <span className="gradient-text">
+              <span className="relative inline-block font-black">
+                수
+                <span className="absolute -bottom-0.5 left-0 h-1.5 w-full rounded-full bg-primary/30" />
+              </span>
+              능세계
+              <span className="relative inline-block font-black">
+                지
+                <span className="absolute -bottom-0.5 left-0 h-1.5 w-full rounded-full bg-primary/30" />
+              </span>
+              리 퀴즈
             </span>
           </h1>
+          <p className="px-2 text-[11px] leading-snug text-muted-foreground">
+            - 딸의 성장을 바라는 마음으로, 최신 기출 선지만 정밀 가공해서 O/X 문제로 담았습니다.
+          </p>
+          <span className="inline-block rounded-full border border-primary/25 bg-secondary/70 px-3 py-1 text-[10px] font-bold text-secondary-foreground">
+            suji.haniw.com 💖
+          </span>
         </header>
 
-        <section className="flex min-h-0 flex-1 flex-col justify-center gap-2.5 py-3">
+        <section className="flex min-h-0 flex-1 flex-col justify-center gap-2 py-2">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className={`flex items-center gap-3 rounded-3xl ${f.tone} px-4 py-3 shadow-soft backdrop-blur-sm`}
+              className={`flex items-center gap-2.5 rounded-3xl ${f.tone} px-3.5 py-2.5 shadow-soft backdrop-blur-sm`}
             >
-              <span className="shrink-0 text-xl">{f.icon}</span>
+              <span className="shrink-0 text-lg">{f.icon}</span>
               <div className="min-w-0">
                 <p className="truncate font-display text-[15px] text-foreground">{f.title}</p>
                 <p className="text-[11px] leading-snug text-muted-foreground">{f.desc}</p>
@@ -77,7 +94,7 @@ function LandingPage() {
         <div className="shrink-0 space-y-2">
           <Link
             to="/quiz"
-            className="block w-full animate-pulse-soft rounded-3xl btn-gradient py-4 text-center font-display text-lg transition active:scale-95"
+            className="block w-full animate-pulse-soft rounded-3xl btn-gradient py-3.5 text-center font-display text-lg transition active:scale-95"
           >
             🌸 지금 바로 퀴즈 시작하기
           </Link>
@@ -99,8 +116,8 @@ function LandingPage() {
           )}
         </div>
 
-        <footer className="shrink-0 pt-2.5">
-          <p className="text-[11px] leading-snug text-[#888888]">
+        <footer className="shrink-0 pt-2">
+          <p className="text-[10px] leading-snug text-[#888888] sm:text-[11px]">
             본 서비스의 지문 및 해설은 수능·모의평가 기출문제를 기반으로 AI 분석을 통해 2차
             가공(O/X 변환)된 비영리 학습 자료입니다. AI 변환 특성상 일부 오탈자나 해석상의 차이가
             존재할 수 있습니다. 오류 발견 시 [🚨 오류 제보] 버튼을 통해 적극적인 피드백
