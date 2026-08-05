@@ -66,7 +66,7 @@ export function QuizRunner({
 
   if (done) {
     return (
-      <section className="flex flex-1 flex-col">
+      <section className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-6">
         <div className="glass-card relative mb-6 animate-pop p-8 text-center">
           <Confetti key={`result-${burst}`} />
           <p className="text-xs font-bold text-muted-foreground">최종 점수</p>
@@ -132,15 +132,16 @@ export function QuizRunner({
   if (!current) return null;
 
   return (
-    <section className="flex flex-1 flex-col">
-      <div className="mb-5">
-        <div className="mb-2 flex items-center justify-between gap-2 text-xs font-bold text-secondary-foreground">
-          <span className="truncate rounded-full bg-lavender/40 px-3 py-1">{current.unit}</span>
+    <section className="flex min-h-0 flex-1 flex-col">
+      {/* Top: progress */}
+      <div className="shrink-0">
+        <div className="mb-1.5 flex items-center justify-between gap-2 text-[11px] font-bold text-secondary-foreground">
+          <span className="truncate rounded-full bg-lavender/40 px-2.5 py-1">{current.unit}</span>
           <span className="shrink-0">
             💖 {index + 1}/{total}
           </span>
         </div>
-        <div className="h-3 w-full overflow-hidden rounded-full bg-secondary/70">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-secondary/70">
           <div
             className="h-full rounded-full btn-gradient transition-all duration-500"
             style={{ width: `${((index + (picked !== null ? 1 : 0)) / total) * 100}%` }}
@@ -148,28 +149,27 @@ export function QuizRunner({
         </div>
       </div>
 
-      <div className="glass-card flex min-h-44 flex-col justify-center gap-3 p-6">
+      {/* Center: statement */}
+      <div className="glass-card my-3 flex min-h-0 flex-1 flex-col justify-center gap-2 overflow-y-auto p-4">
         {current.type === "review" && (
-          <span className="w-fit rounded-full bg-peach/70 px-3 py-1 text-[11px] font-bold text-peach-foreground">
+          <span className="w-fit shrink-0 rounded-full bg-peach/70 px-2.5 py-0.5 text-[10px] font-bold text-peach-foreground">
             💡 오늘의 복습
           </span>
         )}
         {current.type === "new" && (
-          <span className="w-fit rounded-full bg-mint/60 px-3 py-1 text-[11px] font-bold text-mint-foreground">
+          <span className="w-fit shrink-0 rounded-full bg-mint/60 px-2.5 py-0.5 text-[10px] font-bold text-mint-foreground">
             새로운 기출
           </span>
         )}
-        <p className="text-lg font-bold leading-relaxed sm:text-xl">{current.statement}</p>
-        <div className="flex justify-end">
-          <ReportIssueButton questionId={current.id} userId={userId} />
-        </div>
+        <p className="text-[17px] font-bold leading-relaxed">{current.statement}</p>
       </div>
 
-      <div className="relative mx-auto mt-6 grid w-full max-w-md grid-cols-2 gap-4">
+      {/* Middle-bottom: O / X */}
+      <div className="relative grid shrink-0 grid-cols-2 gap-3">
         <button
           onClick={() => choose(true)}
           disabled={picked !== null}
-          className="glass-card aspect-square rounded-full font-display text-6xl text-primary transition duration-200 active:scale-90 disabled:opacity-50"
+          className="glass-card rounded-3xl py-5 font-display text-5xl text-primary transition duration-200 active:scale-90 disabled:opacity-50"
           aria-label="O 선택"
         >
           O
@@ -177,7 +177,7 @@ export function QuizRunner({
         <button
           onClick={() => choose(false)}
           disabled={picked !== null}
-          className="glass-card aspect-square rounded-full font-display text-6xl text-lavender-foreground transition duration-200 active:scale-90 disabled:opacity-50"
+          className="glass-card rounded-3xl py-5 font-display text-5xl text-lavender-foreground transition duration-200 active:scale-90 disabled:opacity-50"
           aria-label="X 선택"
         >
           X
@@ -185,29 +185,33 @@ export function QuizRunner({
         {picked !== null && (isRight ? <Confetti key={burst} /> : <Sparkles key={burst} />)}
       </div>
 
+      {/* Bottom overlay: explanation */}
       {picked !== null && (
-        <div className="glass-card mt-6 animate-pop p-5">
-          <p
-            className={`font-display text-xl ${isRight ? "text-success" : "text-destructive"}`}
-          >
-            {isRight ? "맞았습니다! 🎉" : "틀렸습니다! 🥺"}
-            <span className="ml-2 text-xs font-bold text-muted-foreground">
-              정답 {current.is_correct === 1 ? "O" : "X"}
-            </span>
-          </p>
-          <p className="mt-3 text-sm leading-relaxed">{current.explanation}</p>
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-            <span className="rounded-full bg-secondary px-3 py-1 font-bold text-secondary-foreground">
-              {nextReviewLabel(current, isRight)}
-            </span>
-            <span>출처 · {current.source}</span>
+        <div className="fixed inset-x-0 bottom-0 z-40 animate-pop px-4 pb-4">
+          <div className="glass-card mx-auto max-h-[52vh] w-full max-w-md overflow-y-auto p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className={`font-display text-lg ${isRight ? "text-success" : "text-destructive"}`}>
+                {isRight ? "맞았습니다! 🎉" : "틀렸습니다! 🥺"}
+                <span className="ml-2 text-[11px] font-bold text-muted-foreground">
+                  정답 {current.is_correct === 1 ? "O" : "X"}
+                </span>
+              </p>
+              <ReportIssueButton questionId={current.id} userId={userId} />
+            </div>
+            <p className="mt-2 text-[13px] leading-relaxed">{current.explanation}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground">
+              <span className="rounded-full bg-secondary px-2.5 py-1 font-bold text-secondary-foreground">
+                {nextReviewLabel(current, isRight)}
+              </span>
+              <span>출처 · {current.source}</span>
+            </div>
+            <button
+              onClick={next}
+              className="mt-3 w-full rounded-2xl btn-gradient py-3 font-display text-base transition active:scale-95"
+            >
+              {index + 1 >= total ? "결과 보기 🏆" : "다음 문제 →"}
+            </button>
           </div>
-          <button
-            onClick={next}
-            className="mt-5 w-full rounded-2xl btn-gradient py-3.5 font-display text-base transition active:scale-95"
-          >
-            {index + 1 >= total ? "결과 보기 🏆" : "다음 문제 →"}
-          </button>
         </div>
       )}
     </section>
