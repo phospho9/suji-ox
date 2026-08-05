@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import { DisclaimerFooter } from "@/components/DisclaimerFooter";
 import { Toaster } from "@/components/ui/sonner";
 import {
   Outlet,
