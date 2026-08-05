@@ -157,6 +157,9 @@ export async function submitReport(input: {
   questionId: number;
   userId?: string | null;
   reason: string;
+  details?: string;
+  statement?: string;
+  source?: string;
 }): Promise<void> {
   const res = await fetch(`${BASE_URL}/api/reports`, {
     method: "POST",
@@ -164,7 +167,10 @@ export async function submitReport(input: {
     body: JSON.stringify({
       question_id: input.questionId,
       user_id: input.userId ?? null,
-      reason: input.reason.trim().slice(0, 1000),
+      reason: input.reason.trim().slice(0, 200),
+      details: (input.details ?? "").trim().slice(0, 1000),
+      statement: input.statement ?? null,
+      source: input.source ?? null,
     }),
   });
   if (!res.ok) throw new Error("failed to submit report");
