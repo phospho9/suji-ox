@@ -21,7 +21,7 @@ export function ReportIssueButton({
   questionId: number;
   userId?: string | null | undefined;
   className?: string | undefined;
-  className?: string;
+  
 }) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
