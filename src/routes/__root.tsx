@@ -173,14 +173,18 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const FULLSCREEN_ROUTES = new Set(["/", "/quiz"]);
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const fullscreen = FULLSCREEN_ROUTES.has(pathname.replace(/\/$/, "") || "/");
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <DisclaimerFooter />
+      {!fullscreen && <DisclaimerFooter />}
       <Toaster position="top-center" />
     </QueryClientProvider>
   );
