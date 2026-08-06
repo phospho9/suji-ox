@@ -1,5 +1,8 @@
 const BASE_URL = "https://world-geography-test.acumoxa.workers.dev";
 
+/** 현재 앱이 다루는 과목 (다과목 백엔드에서 세계지리만 필터) */
+export const CURRENT_SUBJECT = import.meta.env["VITE_SUBJECT"] ?? "세계지리";
+
 export type Question = {
   id: number;
   statement: string;
@@ -52,6 +55,7 @@ export async function syncUser(payload: SyncUserPayload): Promise<void> {
 export async function fetchQuestions(userId?: string | null): Promise<Question[]> {
   const url = new URL(`${BASE_URL}/api/questions`);
   if (userId) url.searchParams.set("user_id", userId);
+  url.searchParams.set("subject", CURRENT_SUBJECT);
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error("failed to fetch questions");
   const data = (await res.json()) as Question[];
@@ -62,6 +66,7 @@ export async function fetchQuestions(userId?: string | null): Promise<Question[]
 export async function fetchIncorrectQuestions(userId: string): Promise<Question[]> {
   const url = new URL(`${BASE_URL}/api/questions/incorrect`);
   url.searchParams.set("user_id", userId);
+  url.searchParams.set("subject", CURRENT_SUBJECT);
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error("failed to fetch incorrect questions");
   const data = (await res.json()) as Question[];
