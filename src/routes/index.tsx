@@ -94,6 +94,7 @@ function LandingPage() {
         <div className="shrink-0 space-y-2">
           <Link
             to="/quiz"
+            search={{ mode: "daily" }}
             className="block w-full animate-pulse-soft rounded-3xl btn-gradient py-3.5 text-center font-display text-lg transition active:scale-95"
           >
             🌸 지금 바로 퀴즈 시작하기

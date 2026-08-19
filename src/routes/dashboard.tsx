@@ -118,7 +118,7 @@ function DashboardPage() {
           >
             {signingIn ? "연결 중..." : "AI 복습 모드로 시작하기 🚀"}
           </button>
-          <Link to="/quiz" className="text-xs font-bold text-muted-foreground underline">
+          <Link to="/quiz" search={{ mode: "daily" }} className="text-xs font-bold text-muted-foreground underline">
             로그인 없이 그냥 풀기
           </Link>
         </section>
@@ -273,7 +273,7 @@ function DashboardPage() {
           )}
 
           <button
-            onClick={() => void navigate({ to: "/quiz" })}
+            onClick={() => void navigate({ to: "/quiz", search: { mode: "daily" } })}
             className="mt-8 w-full animate-pulse-soft rounded-3xl btn-gradient py-4 font-display text-lg transition active:scale-95"
           >
             🌸 오늘의 복습 / 퀴즈 시작하기
