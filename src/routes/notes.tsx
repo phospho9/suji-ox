@@ -89,6 +89,7 @@ function NotesPage() {
           </p>
           <Link
             to="/quiz"
+            search={{ mode: "daily" }}
             className="mt-2 rounded-2xl btn-gradient px-6 py-3 text-sm font-bold transition active:scale-95"
           >
             퀴즈 풀러 가기 →
