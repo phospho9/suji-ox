@@ -48,7 +48,6 @@ function NotesPage() {
         {items.length > 0 && (
           <Link
             to="/quiz"
-            search={{ mode: "daily" }}
             search={{ mode: "incorrect" }}
             className="shrink-0 rounded-2xl btn-gradient px-4 py-2.5 text-xs font-bold transition active:scale-95"
           >
@@ -129,7 +128,6 @@ function NotesPage() {
 
           <Link
             to="/quiz"
-            search={{ mode: "daily" }}
             search={{ mode: "incorrect" }}
             className="mt-8 w-full animate-pulse-soft rounded-3xl btn-gradient py-4 text-center font-display text-lg transition active:scale-95"
           >
