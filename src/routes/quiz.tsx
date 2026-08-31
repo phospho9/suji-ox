@@ -7,10 +7,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { fetchIncorrectQuestions, fetchQuestions, type Question } from "@/lib/quiz-api";
 
 export const Route = createFileRoute("/quiz")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    mode: search["mode"] === "incorrect" ? ("incorrect" as const) : ("daily" as const),
-    unit: typeof search["unit"] === "string" && search["unit"] ? search["unit"] : undefined,
-    exam: typeof search["exam"] === "string" && search["exam"] ? search["exam"] : undefined,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { mode: "daily" | "incorrect"; unit?: string; exam?: string } => ({
+    mode: search["mode"] === "incorrect" ? "incorrect" : "daily",
+    ...(typeof search["unit"] === "string" && search["unit"] ? { unit: search["unit"] } : {}),
+    ...(typeof search["exam"] === "string" && search["exam"] ? { exam: search["exam"] } : {}),
   }),
 
   head: () => ({
@@ -81,7 +83,11 @@ function QuizRoutePage() {
                 onApply={(next) => {
                   void navigate({
                     to: "/quiz",
-                    search: { mode: "daily", unit: next.unit, exam: next.examName },
+                    search: {
+                      mode: "daily" as const,
+                      ...(next.unit ? { unit: next.unit } : {}),
+                      ...(next.examName ? { exam: next.examName } : {}),
+                    },
                   });
                   setRunKey((n) => n + 1);
                 }}

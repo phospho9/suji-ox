@@ -239,7 +239,7 @@ export async function fetchStatsTrend(userId: string): Promise<TrendPoint[]> {
  * 신규 엔드포인트가 실패하면 기존 /api/progress로 폴백한다.
  */
 export function submitProgress(input: {
-  userId?: string | null;
+  userId?: string | null | undefined;
   questionId: number;
   isCorrect: boolean;
   timeSpentMs?: number;
