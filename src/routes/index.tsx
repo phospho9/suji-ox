@@ -1,25 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { useAuth } from "@/hooks/useAuth";
+import { getSubjectConfig } from "@/config/subjectConfig";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "수능 세계지리 1등급 O/X 퀴즈 | 수지 SUJI" },
-      {
-        name: "description",
-        content:
-          "하루 20선지로 끝내는 수능 세계지리 O/X 기출 퀴즈. 에빙하우스 망각곡선 자동 복습과 단원별 정확도 분석까지 한 화면에서.",
-      },
-      { property: "og:title", content: "수능 세계지리 1등급 O/X 퀴즈 | 수지 SUJI" },
-      {
-        property: "og:description",
-        content:
-          "기출 O/X 변환 퀴즈, 망각곡선 자동 복습, 단원별·추세 분석을 제공하는 수능 세계지리 학습 서비스.",
-      },
-      { name: "naver-site-verification", content: "9f791a60b282df2371e7b6f2ddde004a00b213c6" },
-    ],
-  }),
+  head: () => {
+    const config = getSubjectConfig();
+    return {
+      meta: [
+        { title: `수능 ${config.subject} 1등급 O/X 퀴즈 | ${config.title}` },
+        {
+          name: "description",
+          content: `하루 20선지로 끝내는 수능 ${config.subject} O/X 기출 퀴즈. 에빙하우스 망각곡선 자동 복습과 단원별 정확도 분석까지 한 화면에서.`,
+        },
+        { property: "og:title", content: `수능 ${config.subject} 1등급 O/X 퀴즈 | ${config.title}` },
+        {
+          property: "og:description",
+          content: `기출 O/X 변환 퀴즈, 망각곡선 자동 복습, 단원별·추세 분석을 제공하는 수능 ${config.subject} 학습 서비스.`,
+        },
+        { name: "naver-site-verification", content: "9f791a60b282df2371e7b6f2ddde004a00b213c6" },
+      ],
+    };
+  },
   component: LandingPage,
 });
 
@@ -46,6 +48,8 @@ const FEATURES = [
 
 function LandingPage() {
   const { user, signingIn, signInWithGoogle } = useAuth();
+  const config = getSubjectConfig();
+  const currentHost = typeof window !== "undefined" ? window.location.hostname : "suji.haniw.com";
 
   return (
     <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-5 pb-2.5 pt-3">
@@ -56,23 +60,14 @@ function LandingPage() {
               현직 한의사 아빠가 고3 딸을 위해 직접 만든
             </span>
             <span className="block">
-              <span className="relative inline-block font-black">
-                <span className="relative z-10 text-[#E0247D]">수</span>
-                <span className="absolute -bottom-0.5 left-0 -z-10 h-1.5 w-full rounded-full bg-[#E0247D]/25" />
-              </span>
-              능세계
-              <span className="relative inline-block font-black">
-                <span className="relative z-10 text-[#E0247D]">지</span>
-                <span className="absolute -bottom-0.5 left-0 -z-10 h-1.5 w-full rounded-full bg-[#E0247D]/25" />
-              </span>
-              리 퀴즈
+              {config.badge} 수능 <span className="font-black text-[#E0247D]">{config.subject}</span> 퀴즈
             </span>
           </h1>
           <p className="px-2 text-[11px] leading-snug text-muted-foreground">
             - 딸의 성장을 바라는 마음으로, 최신 기출 선지만 정밀 가공해서 O/X 문제로 담았습니다.
           </p>
           <span className="inline-block rounded-full border border-primary/25 bg-secondary/70 px-3 py-1 text-[10px] font-bold text-secondary-foreground">
-            suji.haniw.com 💖
+            {currentHost} 💖
           </span>
         </header>
 
