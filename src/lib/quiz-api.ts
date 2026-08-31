@@ -107,6 +107,16 @@ export async function fetchMetadata(subject = CURRENT_SUBJECT): Promise<SubjectM
   };
 }
 
+/** POST /api/auth — 로그인 직후 사용자 정보 동기화 */
+export async function syncUser(payload: SyncUserPayload): Promise<void> {
+  await fetch(`${BASE_URL}/api/auth`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-User-Id": payload.id },
+    body: JSON.stringify(payload),
+  });
+}
+
+
 export type QuestionFilters = {
   unit?: string | undefined;
   examName?: string | undefined;
