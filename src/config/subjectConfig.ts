@@ -36,5 +36,5 @@ export const SUBJECT_CONFIG: Record<string, SubjectTheme> = {
 
 export const getSubjectConfig = (): SubjectTheme => {
   const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-  return SUBJECT_CONFIG[host] || SUBJECT_CONFIG['suji.haniw.com'];
+  return SUBJECT_CONFIG[host] ?? SUBJECT_CONFIG['suji.haniw.com']!;
 };
