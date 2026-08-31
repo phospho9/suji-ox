@@ -152,6 +152,24 @@ function QuizRoutePage() {
             key={`${mode}-${runKey}`}
             questions={questions}
             userId={user?.id ?? null}
+            filterSlot={
+              mode === "incorrect" ? null : (
+                <QuizFilterDialog
+                  value={{ unit, examName: exam }}
+                  onApply={(next) => {
+                    void navigate({
+                      to: "/quiz",
+                      search: {
+                        mode: "daily" as const,
+                        ...(next.unit ? { unit: next.unit } : {}),
+                        ...(next.examName ? { exam: next.examName } : {}),
+                      },
+                    });
+                    setRunKey((n) => n + 1);
+                  }}
+                />
+              )
+            }
             onExit={() => setRunKey((n) => n + 1)}
             exitLabel="한 세트 더 도전하기 🔄"
           />

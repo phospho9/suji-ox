@@ -23,11 +23,13 @@ export function QuizRunner({
   userId,
   onExit,
   exitLabel = "다시 도전하기 🔄",
+  filterSlot,
 }: {
   questions: Question[];
   userId?: string | null;
   onExit: () => void;
   exitLabel?: string;
+  filterSlot?: React.ReactNode;
 }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -156,6 +158,7 @@ export function QuizRunner({
           >
             ←
           </Link>
+          {filterSlot}
           <div className="min-w-0 flex-1">
             <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary/60">
               <div
