@@ -32,7 +32,8 @@ export const Route = createFileRoute("/quiz")({
 });
 
 function QuizRoutePage() {
-  const { mode } = Route.useSearch();
+  const { mode, unit, exam } = Route.useSearch();
+  const navigate = useNavigate();
   const { user, ready } = useAuth();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ function QuizRoutePage() {
     const task =
       mode === "incorrect" && userId
         ? fetchIncorrectQuestions(userId)
-        : fetchQuestions(userId);
+        : fetchQuestions(userId, { unit, examName: exam });
     void task
       .then((data) => {
         if (cancelled) return;
@@ -60,16 +61,32 @@ function QuizRoutePage() {
     return () => {
       cancelled = true;
     };
-  }, [mode, userId, ready, runKey]);
+  }, [mode, userId, ready, runKey, unit, exam]);
 
   return (
     <main className="flex h-screen max-h-screen w-full flex-col overflow-hidden px-4 pb-3 pt-3">
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-hidden">
         {!(!loading && !error && questions.length > 0) && (
-          <div className="mb-2 grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+          <div className="mb-2 grid shrink-0 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2">
             <p className="truncate text-[11px] font-bold text-muted-foreground">
-              {mode === "incorrect" ? "🔁 오답 집중 훈련" : "🌸 오늘의 복습 · 신규 기출"}
+              {mode === "incorrect"
+                ? "🔁 오답 집중 훈련"
+                : (exam ?? unit)
+                  ? `🎯 ${[exam, unit].filter(Boolean).join(" · ")}`
+                  : "🌸 오늘의 복습 · 신규 기출"}
             </p>
+            {mode !== "incorrect" && (
+              <QuizFilterDialog
+                value={{ unit, examName: exam }}
+                onApply={(next) => {
+                  void navigate({
+                    to: "/quiz",
+                    search: { mode: "daily", unit: next.unit, exam: next.examName },
+                  });
+                  setRunKey((n) => n + 1);
+                }}
+              />
+            )}
             <Link
               to="/"
               className="shrink-0 rounded-full border border-border px-3 py-1 text-[11px] font-bold text-muted-foreground active:scale-95"
@@ -78,6 +95,7 @@ function QuizRoutePage() {
             </Link>
           </div>
         )}
+
 
         {loading && (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
