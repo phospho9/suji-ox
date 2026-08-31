@@ -102,6 +102,16 @@ function DashboardPage() {
   const summary = summaryQuery.data;
   const trend = trendQuery.data ?? [];
   const weakUnits = (summary?.units ?? []).filter((u) => u.accuracy < 50);
+  const weakChart = (summary?.units ?? [])
+    .slice()
+    .sort((a, b) => a.accuracy - b.accuracy)
+    .slice(0, 6)
+    .map((u) => ({
+      ...u,
+      label: u.unit.length > 8 ? `${u.unit.slice(0, 8)}…` : u.unit,
+    }));
+  const activity = summary?.recent_activity ?? [];
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-16 pt-7">
