@@ -4,7 +4,10 @@ import { Flame, Target, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,6 +17,7 @@ import {
 import { AppNav } from "@/components/AppNav";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchStatsSummary, fetchStatsTrend, type TrendPoint } from "@/lib/quiz-api";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
