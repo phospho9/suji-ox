@@ -3,6 +3,23 @@ const BASE_URL = "https://world-geography-test.acumoxa.workers.dev";
 /** 현재 앱이 다루는 과목 (다과목 백엔드에서 세계지리만 필터) */
 export const CURRENT_SUBJECT = import.meta.env["VITE_SUBJECT"] ?? "세계지리";
 
+const GUEST_KEY = "suji_guest_id";
+
+/** 로그인 사용자 ID가 없으면 localStorage에 유지되는 게스트 UUID를 사용 */
+export function resolveUserId(userId?: string | null): string {
+  if (userId) return userId;
+  if (typeof window === "undefined") return "guest";
+  let id = window.localStorage.getItem(GUEST_KEY);
+  if (!id) {
+    id =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `guest-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    window.localStorage.setItem(GUEST_KEY, id);
+  }
+  return id;
+}
+
 export type Question = {
   id: number;
   statement: string;
@@ -10,6 +27,7 @@ export type Question = {
   unit: string;
   explanation: string;
   source: string;
+  exam_name?: string;
   type?: "review" | "new" | string;
   next_review_days?: number;
   next_review_at?: string;
@@ -26,6 +44,12 @@ export type UnitStat = {
   total: number;
   correct: number;
   accuracy: number;
+  avg_time_sec: number;
+};
+
+export type ActivityPoint = {
+  date: string;
+  solved: number;
 };
 
 export type StatsSummary = {
@@ -34,6 +58,7 @@ export type StatsSummary = {
   accuracy: number;
   streak: number;
   units: UnitStat[];
+  recent_activity: ActivityPoint[];
 };
 
 export type TrendPoint = {
@@ -42,21 +67,64 @@ export type TrendPoint = {
   solved: number;
 };
 
-/** POST /api/auth — 로그인 직후 사용자 정보 동기화 */
-export async function syncUser(payload: SyncUserPayload): Promise<void> {
-  await fetch(`${BASE_URL}/api/auth`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+export type MetadataUnit = { unit: string; count: number };
+export type MetadataExam = {
+  exam_name: string;
+  exam_year?: number;
+  exam_month?: number;
+  exam_type?: string;
+  count: number;
+};
+export type SubjectMetadata = {
+  subject: string;
+  units: MetadataUnit[];
+  exams: MetadataExam[];
+};
+
+/** GET /api/metadata?subject=... — 단원/시험회차 필터 옵션 */
+export async function fetchMetadata(subject = CURRENT_SUBJECT): Promise<SubjectMetadata> {
+  const url = new URL(`${BASE_URL}/api/metadata`);
+  url.searchParams.set("subject", subject);
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error("failed to fetch metadata");
+  const raw = (await res.json()) as Record<string, unknown>;
+  const units = Array.isArray(raw["units"]) ? (raw["units"] as Record<string, unknown>[]) : [];
+  const exams = Array.isArray(raw["exams"]) ? (raw["exams"] as Record<string, unknown>[]) : [];
+  return {
+    subject: String(raw["subject"] ?? subject),
+    units: units
+      .map((u) => ({ unit: String(u["unit"] ?? ""), count: Number(u["count"] ?? 0) }))
+      .filter((u) => u.unit),
+    exams: exams
+      .map((e) => ({
+        exam_name: String(e["exam_name"] ?? ""),
+        exam_year: Number(e["exam_year"] ?? 0),
+        exam_month: Number(e["exam_month"] ?? 0),
+        exam_type: String(e["exam_type"] ?? ""),
+        count: Number(e["count"] ?? 0),
+      }))
+      .filter((e) => e.exam_name),
+  };
 }
 
-/** GET /api/questions[?user_id=...] */
-export async function fetchQuestions(userId?: string | null): Promise<Question[]> {
+export type QuestionFilters = {
+  unit?: string | undefined;
+  examName?: string | undefined;
+};
+
+/** GET /api/questions[?user_id=&subject=&unit=&exam_name=] */
+export async function fetchQuestions(
+  userId?: string | null,
+  filters: QuestionFilters = {},
+): Promise<Question[]> {
   const url = new URL(`${BASE_URL}/api/questions`);
   if (userId) url.searchParams.set("user_id", userId);
   url.searchParams.set("subject", CURRENT_SUBJECT);
-  const res = await fetch(url.toString());
+  if (filters.unit) url.searchParams.set("unit", filters.unit);
+  if (filters.examName) url.searchParams.set("exam_name", filters.examName);
+  const res = await fetch(url.toString(), {
+    headers: { "X-User-Id": resolveUserId(userId) },
+  });
   if (!res.ok) throw new Error("failed to fetch questions");
   const data = (await res.json()) as Question[];
   return Array.isArray(data) ? data : [];
@@ -67,11 +135,12 @@ export async function fetchIncorrectQuestions(userId: string): Promise<Question[
   const url = new URL(`${BASE_URL}/api/questions/incorrect`);
   url.searchParams.set("user_id", userId);
   url.searchParams.set("subject", CURRENT_SUBJECT);
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), { headers: { "X-User-Id": resolveUserId(userId) } });
   if (!res.ok) throw new Error("failed to fetch incorrect questions");
   const data = (await res.json()) as Question[];
   return Array.isArray(data) ? data : [];
 }
+
 
 function num(value: unknown): number {
   const n = Number(value);
