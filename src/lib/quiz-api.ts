@@ -147,17 +147,21 @@ function num(value: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** GET /api/stats/summary?user_id=... */
+/** GET /api/stats/summary?user_id=... (unit_stats / recent_activity 지원) */
 export async function fetchStatsSummary(userId: string): Promise<StatsSummary> {
   const url = new URL(`${BASE_URL}/api/stats/summary`);
   url.searchParams.set("user_id", userId);
-  const res = await fetch(url.toString());
+  url.searchParams.set("subject", CURRENT_SUBJECT);
+  const res = await fetch(url.toString(), { headers: { "X-User-Id": resolveUserId(userId) } });
   if (!res.ok) throw new Error("failed to fetch summary");
   const raw = (await res.json()) as Record<string, unknown>;
-  const rawUnits = Array.isArray(raw["units"]) ? (raw["units"] as Record<string, unknown>[]) : [];
+  const rawUnitsSource = raw["unit_stats"] ?? raw["units"];
+  const rawUnits = Array.isArray(rawUnitsSource)
+    ? (rawUnitsSource as Record<string, unknown>[])
+    : [];
 
   const units: UnitStat[] = rawUnits.map((u) => {
-    const total = num(u["total"] ?? u["total_solved"] ?? u["count"]);
+    const total = num(u["total"] ?? u["solved"] ?? u["total_solved"] ?? u["count"]);
     const correct = num(u["correct"] ?? u["total_correct"]);
     const accuracy =
       u["accuracy"] !== undefined
@@ -165,13 +169,28 @@ export async function fetchStatsSummary(userId: string): Promise<StatsSummary> {
         : total > 0
           ? Math.round((correct / total) * 100)
           : 0;
+    const avgMs = num(u["avg_time_ms"] ?? u["avg_time_spent_ms"]);
     return {
       unit: String(u["unit"] ?? u["name"] ?? "기타"),
       total,
       correct,
       accuracy: accuracy <= 1 && accuracy > 0 ? Math.round(accuracy * 100) : Math.round(accuracy),
+      avg_time_sec: Math.round(
+        (u["avg_time_sec"] !== undefined ? num(u["avg_time_sec"]) : avgMs / 1000) * 10,
+      ) / 10,
     };
   });
+
+  const rawActivity = Array.isArray(raw["recent_activity"])
+    ? (raw["recent_activity"] as Record<string, unknown>[])
+    : [];
+  const recent_activity: ActivityPoint[] = rawActivity
+    .map((a) => ({
+      date: String(a["date"] ?? a["day"] ?? ""),
+      solved: num(a["solved"] ?? a["count"] ?? a["total"]),
+    }))
+    .filter((a) => a.date)
+    .sort((a, b) => a.date.localeCompare(b.date));
 
   const accuracyRaw = num(raw["accuracy"]);
   return {
@@ -181,8 +200,10 @@ export async function fetchStatsSummary(userId: string): Promise<StatsSummary> {
       accuracyRaw <= 1 && accuracyRaw > 0 ? Math.round(accuracyRaw * 100) : Math.round(accuracyRaw),
     streak: num(raw["streak"] ?? raw["streak_days"] ?? raw["consecutive_days"]),
     units,
+    recent_activity,
   };
 }
+
 
 /** GET /api/stats/trend?user_id=... */
 export async function fetchStatsTrend(userId: string): Promise<TrendPoint[]> {
