@@ -34,6 +34,7 @@ export function QuizRunner({
   const [picked, setPicked] = useState<boolean | null>(null);
   const [burst, setBurst] = useState(0);
   const [done, setDone] = useState(false);
+  const shownAt = useRef<number>(Date.now());
 
   const total = questions.length;
   const current = questions[index];
@@ -45,15 +46,22 @@ export function QuizRunner({
   const rate = total ? Math.round((score / total) * 100) : 0;
   const isRight = current ? picked === (current.is_correct === 1) : false;
 
+  useEffect(() => {
+    shownAt.current = Date.now();
+  }, [index]);
+
   function choose(value: boolean) {
     if (picked !== null || !current) return;
     const correct = value === (current.is_correct === 1);
     setPicked(value);
     setAnswers((prev) => [...prev, value]);
     setBurst((n) => n + 1);
-    if (userId) {
-      submitProgress({ userId, questionId: current.id, isCorrect: correct });
-    }
+    submitProgress({
+      userId,
+      questionId: current.id,
+      isCorrect: correct,
+      timeSpentMs: Date.now() - shownAt.current,
+    });
     toast[correct ? "success" : "error"](correct ? "정답이에요! 🎉" : "오답이에요 🥺", {
       description: nextReviewLabel(current, correct),
     });
@@ -63,7 +71,9 @@ export function QuizRunner({
     if (index + 1 >= total) setDone(true);
     else setIndex((i) => i + 1);
     setPicked(null);
+    shownAt.current = Date.now();
   }
+
 
   if (done) {
     return (
