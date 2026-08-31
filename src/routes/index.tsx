@@ -60,8 +60,22 @@ function LandingPage() {
               현직 한의사 아빠가 고3 딸을 위해 직접 만든
             </span>
             <span className="block">
-              {config.badge} 수능 <span className="font-black text-[#E0247D]">{config.subject}</span> 퀴즈
+              {config.badge}{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10 font-black text-[#E0247D]">(수)</span>
+                <span className="relative z-10">능 세계</span>
+                <span className="relative z-10 font-black text-[#E0247D]">(지)</span>
+                <span className="relative z-10">리 퀴즈</span>
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0.5 -z-10 h-2 rounded-full bg-primary/25"
+                />
+              </span>
             </span>
+            <span className="block text-[10px] font-bold text-[#E0247D] sm:text-[11px]">
+              = 수지닷컴 💖
+            </span>
+
           </h1>
           <p className="px-2 text-[11px] leading-snug text-muted-foreground">
             - 딸의 성장을 바라는 마음으로, 최신 기출 선지만 정밀 가공해서 O/X 문제로 담았습니다.
