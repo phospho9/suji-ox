@@ -224,28 +224,51 @@ export async function fetchStatsTrend(userId: string): Promise<TrendPoint[]> {
 }
 
 /**
- * POST /api/progress — UI 전환을 막지 않도록 항상 백그라운드(fire-and-forget)로 전송.
+ * POST /api/progress/submit — solve_logs 적재.
+ * UI 전환을 막지 않도록 항상 백그라운드(fire-and-forget)로 전송하고,
+ * 신규 엔드포인트가 실패하면 기존 /api/progress로 폴백한다.
  */
 export function submitProgress(input: {
-  userId: string;
+  userId?: string | null;
   questionId: number;
   isCorrect: boolean;
+  timeSpentMs?: number;
 }): void {
-  const body = JSON.stringify({
-    user_id: input.userId,
-    question_id: input.questionId,
-    is_correct: input.isCorrect,
-  });
+  const userId = resolveUserId(input.userId);
+  const timeSpentMs = Math.max(0, Math.round(input.timeSpentMs ?? 0));
+  const headers = { "Content-Type": "application/json", "X-User-Id": userId };
 
-  void fetch(`${BASE_URL}/api/progress`, {
+  void fetch(`${BASE_URL}/api/progress/submit`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
+    headers,
     keepalive: true,
-  }).catch(() => {
-    // 학습 흐름을 방해하지 않도록 조용히 무시
-  });
+    body: JSON.stringify({
+      userId,
+      questionId: input.questionId,
+      isCorrect: input.isCorrect,
+      timeSpentMs,
+    }),
+  })
+    .then((res) => {
+      if (res.ok) return;
+      // 구버전 엔드포인트 폴백
+      return fetch(`${BASE_URL}/api/progress`, {
+        method: "POST",
+        headers,
+        keepalive: true,
+        body: JSON.stringify({
+          user_id: userId,
+          question_id: input.questionId,
+          is_correct: input.isCorrect,
+          time_spent_ms: timeSpentMs,
+        }),
+      }).then(() => undefined);
+    })
+    .catch(() => {
+      // 학습 흐름을 방해하지 않도록 조용히 무시
+    });
 }
+
 
 /** POST /api/reports — 문제 오류 제보 */
 export async function submitReport(input: {
