@@ -1,14 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { QuizRunner } from "@/components/QuizRunner";
+import { QuizFilterDialog } from "@/components/QuizFilterDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchIncorrectQuestions, fetchQuestions, type Question } from "@/lib/quiz-api";
 
 export const Route = createFileRoute("/quiz")({
   validateSearch: (search: Record<string, unknown>) => ({
     mode: search["mode"] === "incorrect" ? ("incorrect" as const) : ("daily" as const),
+    unit: typeof search["unit"] === "string" && search["unit"] ? search["unit"] : undefined,
+    exam: typeof search["exam"] === "string" && search["exam"] ? search["exam"] : undefined,
   }),
+
   head: () => ({
     meta: [
       { title: "오늘의 O/X 퀴즈 | 수지 SUJI 수능지리" },
