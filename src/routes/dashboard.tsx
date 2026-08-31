@@ -4,7 +4,10 @@ import { Flame, Target, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,6 +17,7 @@ import {
 import { AppNav } from "@/components/AppNav";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchStatsSummary, fetchStatsTrend, type TrendPoint } from "@/lib/quiz-api";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -98,6 +102,16 @@ function DashboardPage() {
   const summary = summaryQuery.data;
   const trend = trendQuery.data ?? [];
   const weakUnits = (summary?.units ?? []).filter((u) => u.accuracy < 50);
+  const weakChart = (summary?.units ?? [])
+    .slice()
+    .sort((a, b) => a.accuracy - b.accuracy)
+    .slice(0, 6)
+    .map((u) => ({
+      ...u,
+      label: u.unit.length > 8 ? `${u.unit.slice(0, 8)}…` : u.unit,
+    }));
+  const activity = summary?.recent_activity ?? [];
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-5 pb-16 pt-7">
@@ -212,6 +226,126 @@ function DashboardPage() {
               </div>
             )}
           </section>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <section className="glass-card p-5">
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <h2 className="font-display text-lg">🚨 약점 단원 분석</h2>
+                <span className="shrink-0 text-[11px] font-bold text-muted-foreground">
+                  단원별 정답률 · 평균 풀이시간
+                </span>
+              </div>
+              {weakChart.length === 0 ? (
+                <p className="py-10 text-center text-sm text-muted-foreground">
+                  아직 단원 데이터가 없어요. 퀴즈를 풀면 약점을 찾아드려요 🔍
+                </p>
+              ) : (
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={weakChart}
+                      layout="vertical"
+                      margin={{ top: 4, right: 16, left: 4, bottom: 0 }}
+                    >
+                      <CartesianGrid stroke="var(--color-border)" strokeDasharray="4 4" />
+                      <XAxis
+                        type="number"
+                        domain={[0, 100]}
+                        tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="label"
+                        width={78}
+                        tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 16,
+                          border: "1px solid var(--color-border)",
+                          background: "var(--color-card)",
+                          color: "var(--color-card-foreground)",
+                          fontSize: 12,
+                        }}
+                        formatter={(v: number, _n, item) => [
+                          `${v}% · 평균 ${item?.payload?.avg_time_sec ?? 0}초`,
+                          item?.payload?.unit ?? "정답률",
+                        ]}
+                      />
+                      <Bar dataKey="accuracy" radius={[0, 12, 12, 0]} barSize={18}>
+                        {weakChart.map((u) => (
+                          <Cell
+                            key={u.unit}
+                            fill={
+                              u.accuracy < 50
+                                ? "var(--color-destructive)"
+                                : "var(--color-primary)"
+                            }
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </section>
+
+            <section className="glass-card p-5">
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <h2 className="font-display text-lg">🔥 최근 학습량</h2>
+                <span className="shrink-0 text-[11px] font-bold text-muted-foreground">
+                  일자별 푼 문제 수
+                </span>
+              </div>
+              {activity.length === 0 ? (
+                <p className="py-10 text-center text-sm text-muted-foreground">
+                  최근 학습 기록이 없어요. 오늘 한 세트 풀어볼까요? 🌱
+                </p>
+              ) : (
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={activity} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+                      <CartesianGrid stroke="var(--color-border)" strokeDasharray="4 4" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        allowDecimals={false}
+                        tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 16,
+                          border: "1px solid var(--color-border)",
+                          background: "var(--color-card)",
+                          color: "var(--color-card-foreground)",
+                          fontSize: 12,
+                        }}
+                        formatter={(v: number) => [`${v}문제`, "푼 문제"]}
+                      />
+                      <Bar
+                        dataKey="solved"
+                        fill="var(--color-primary)"
+                        radius={[10, 10, 0, 0]}
+                        barSize={18}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </section>
+          </div>
+
+
 
           <section className="mt-6">
             <h2 className="mb-3 px-1 font-display text-lg">🧭 단원별 숙련도</h2>

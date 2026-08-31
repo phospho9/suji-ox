@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Confetti, Sparkles } from "@/components/Confetti";
@@ -23,17 +23,20 @@ export function QuizRunner({
   userId,
   onExit,
   exitLabel = "다시 도전하기 🔄",
+  filterSlot,
 }: {
   questions: Question[];
   userId?: string | null;
   onExit: () => void;
   exitLabel?: string;
+  filterSlot?: React.ReactNode;
 }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [picked, setPicked] = useState<boolean | null>(null);
   const [burst, setBurst] = useState(0);
   const [done, setDone] = useState(false);
+  const shownAt = useRef<number>(Date.now());
 
   const total = questions.length;
   const current = questions[index];
@@ -45,15 +48,22 @@ export function QuizRunner({
   const rate = total ? Math.round((score / total) * 100) : 0;
   const isRight = current ? picked === (current.is_correct === 1) : false;
 
+  useEffect(() => {
+    shownAt.current = Date.now();
+  }, [index]);
+
   function choose(value: boolean) {
     if (picked !== null || !current) return;
     const correct = value === (current.is_correct === 1);
     setPicked(value);
     setAnswers((prev) => [...prev, value]);
     setBurst((n) => n + 1);
-    if (userId) {
-      submitProgress({ userId, questionId: current.id, isCorrect: correct });
-    }
+    submitProgress({
+      userId,
+      questionId: current.id,
+      isCorrect: correct,
+      timeSpentMs: Date.now() - shownAt.current,
+    });
     toast[correct ? "success" : "error"](correct ? "정답이에요! 🎉" : "오답이에요 🥺", {
       description: nextReviewLabel(current, correct),
     });
@@ -63,7 +73,9 @@ export function QuizRunner({
     if (index + 1 >= total) setDone(true);
     else setIndex((i) => i + 1);
     setPicked(null);
+    shownAt.current = Date.now();
   }
+
 
   if (done) {
     return (
@@ -146,6 +158,7 @@ export function QuizRunner({
           >
             ←
           </Link>
+          {filterSlot}
           <div className="min-w-0 flex-1">
             <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary/60">
               <div
