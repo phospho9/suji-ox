@@ -159,32 +159,36 @@ function num(value: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** GET /api/stats/summary?user_id=... (unit_stats / recent_activity 지원) */
-export async function fetchStatsSummary(userId: string): Promise<StatsSummary> {
+/** GET /api/stats/summary?user_id=&subject=... (units / recent_activity 지원) */
+export async function fetchStatsSummary(
+  userId: string,
+  subject: string = CURRENT_SUBJECT,
+): Promise<StatsSummary> {
   const url = new URL(`${BASE_URL}/api/stats/summary`);
   url.searchParams.set("user_id", userId);
-  url.searchParams.set("subject", CURRENT_SUBJECT);
+  url.searchParams.set("subject", subject);
   const res = await fetch(url.toString(), { headers: { "X-User-Id": resolveUserId(userId) } });
   if (!res.ok) throw new Error("failed to fetch summary");
   const raw = (await res.json()) as Record<string, unknown>;
-  const rawUnitsSource = raw["unit_stats"] ?? raw["units"];
+  const rawUnitsSource = raw["units"] ?? raw["unit_stats"];
   const rawUnits = Array.isArray(rawUnitsSource)
     ? (rawUnitsSource as Record<string, unknown>[])
     : [];
 
   const units: UnitStat[] = rawUnits.map((u) => {
-    const total = num(u["total"] ?? u["solved"] ?? u["total_solved"] ?? u["count"]);
+    const solved = num(u["solved"] ?? u["total"] ?? u["total_solved"] ?? u["count"]);
     const correct = num(u["correct"] ?? u["total_correct"]);
     const accuracy =
       u["accuracy"] !== undefined
         ? num(u["accuracy"])
-        : total > 0
-          ? Math.round((correct / total) * 100)
+        : solved > 0
+          ? Math.round((correct / solved) * 100)
           : 0;
     const avgMs = num(u["avg_time_ms"] ?? u["avg_time_spent_ms"]);
     return {
       unit: String(u["unit"] ?? u["name"] ?? "기타"),
-      total,
+      total: solved,
+      solved,
       correct,
       accuracy: accuracy <= 1 && accuracy > 0 ? Math.round(accuracy * 100) : Math.round(accuracy),
       avg_time_sec: Math.round(
@@ -210,6 +214,7 @@ export async function fetchStatsSummary(userId: string): Promise<StatsSummary> {
     total_correct: num(raw["total_correct"]),
     accuracy:
       accuracyRaw <= 1 && accuracyRaw > 0 ? Math.round(accuracyRaw * 100) : Math.round(accuracyRaw),
+    mastered_count: num(raw["mastered_count"]),
     streak: num(raw["streak"] ?? raw["streak_days"] ?? raw["consecutive_days"]),
     units,
     recent_activity,
