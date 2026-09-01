@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Flame, Target, TrendingUp } from "lucide-react";
+import { Flame, Target, TrendingUp, Trophy } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -14,6 +14,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { getSubjectConfig } from "@/config/subjectConfig";
 import { AppNav } from "@/components/AppNav";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchStatsSummary, fetchStatsTrend, type TrendPoint } from "@/lib/quiz-api";
