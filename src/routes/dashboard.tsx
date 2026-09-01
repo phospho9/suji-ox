@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { Flame, Target, TrendingUp, Trophy } from "lucide-react";
 import {
   Area,
