@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Flame, Target, TrendingUp } from "lucide-react";
+import { useMemo } from "react";
+import { Flame, Target, TrendingUp, Trophy } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -14,6 +15,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { getSubjectConfig } from "@/config/subjectConfig";
 import { AppNav } from "@/components/AppNav";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchStatsSummary, fetchStatsTrend, type TrendPoint } from "@/lib/quiz-api";
@@ -87,16 +89,21 @@ function DashboardPage() {
   const { user, ready, signingIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const userId = user?.id;
+  const subject = useMemo(() => getSubjectConfig().subject, []);
 
   const summaryQuery = useQuery({
-    queryKey: ["stats-summary", userId],
-    queryFn: () => fetchStatsSummary(userId!),
+    queryKey: ["stats-summary", userId, subject],
+    queryFn: () => fetchStatsSummary(userId!, subject),
     enabled: Boolean(userId),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
   const trendQuery = useQuery({
-    queryKey: ["stats-trend", userId],
-    queryFn: () => fetchStatsTrend(userId!),
+    queryKey: ["stats-trend", userId, subject],
+    queryFn: () => fetchStatsTrend(userId!, subject),
     enabled: Boolean(userId),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const summary = summaryQuery.data;
@@ -142,7 +149,7 @@ function DashboardPage() {
             {user.displayName}님의 <span className="gradient-text">학습 대시보드</span> 💖
           </h1>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard
               icon={<Target className="size-4" />}
               label="총 푼 문제"
@@ -165,6 +172,14 @@ function DashboardPage() {
               suffix="일"
               badge={(summary?.streak ?? 0) > 0 ? "불꽃 유지 중 🔥🔥" : "오늘 첫 불씨를 켜봐요 🔥"}
               tone="bg-peach/70 text-peach-foreground"
+            />
+            <StatCard
+              icon={<Trophy className="size-4" />}
+              label="마스터한 문제"
+              value={summary?.mastered_count ?? 0}
+              suffix="문제"
+              badge={(summary?.mastered_count ?? 0) > 0 ? "연속 3회 이상 정답 🏆" : undefined}
+              tone="bg-lavender/60 text-lavender-foreground"
             />
           </div>
 
