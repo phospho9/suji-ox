@@ -42,6 +42,7 @@ export type SyncUserPayload = {
 export type UnitStat = {
   unit: string;
   total: number;
+  solved: number;
   correct: number;
   accuracy: number;
   avg_time_sec: number;
@@ -56,6 +57,7 @@ export type StatsSummary = {
   total_solved: number;
   total_correct: number;
   accuracy: number;
+  mastered_count: number;
   streak: number;
   units: UnitStat[];
   recent_activity: ActivityPoint[];
