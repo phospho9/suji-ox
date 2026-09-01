@@ -222,11 +222,15 @@ export async function fetchStatsSummary(
 }
 
 
-/** GET /api/stats/trend?user_id=... */
-export async function fetchStatsTrend(userId: string): Promise<TrendPoint[]> {
+/** GET /api/stats/trend?user_id=&subject=... */
+export async function fetchStatsTrend(
+  userId: string,
+  subject: string = CURRENT_SUBJECT,
+): Promise<TrendPoint[]> {
   const url = new URL(`${BASE_URL}/api/stats/trend`);
   url.searchParams.set("user_id", userId);
-  const res = await fetch(url.toString());
+  url.searchParams.set("subject", subject);
+  const res = await fetch(url.toString(), { headers: { "X-User-Id": resolveUserId(userId) } });
   if (!res.ok) throw new Error("failed to fetch trend");
   const raw = (await res.json()) as unknown;
   if (!Array.isArray(raw)) return [];
