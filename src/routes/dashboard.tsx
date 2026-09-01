@@ -149,7 +149,7 @@ function DashboardPage() {
             {user.displayName}님의 <span className="gradient-text">학습 대시보드</span> 💖
           </h1>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard
               icon={<Target className="size-4" />}
               label="총 푼 문제"
@@ -172,6 +172,14 @@ function DashboardPage() {
               suffix="일"
               badge={(summary?.streak ?? 0) > 0 ? "불꽃 유지 중 🔥🔥" : "오늘 첫 불씨를 켜봐요 🔥"}
               tone="bg-peach/70 text-peach-foreground"
+            />
+            <StatCard
+              icon={<Trophy className="size-4" />}
+              label="마스터한 문제"
+              value={summary?.mastered_count ?? 0}
+              suffix="문제"
+              badge={(summary?.mastered_count ?? 0) > 0 ? "연속 3회 이상 정답 🏆" : undefined}
+              tone="bg-lavender/60 text-lavender-foreground"
             />
           </div>
 
