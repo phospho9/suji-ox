@@ -89,16 +89,21 @@ function DashboardPage() {
   const { user, ready, signingIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const userId = user?.id;
+  const subject = useMemo(() => getSubjectConfig().subject, []);
 
   const summaryQuery = useQuery({
-    queryKey: ["stats-summary", userId],
-    queryFn: () => fetchStatsSummary(userId!),
+    queryKey: ["stats-summary", userId, subject],
+    queryFn: () => fetchStatsSummary(userId!, subject),
     enabled: Boolean(userId),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
   const trendQuery = useQuery({
-    queryKey: ["stats-trend", userId],
-    queryFn: () => fetchStatsTrend(userId!),
+    queryKey: ["stats-trend", userId, subject],
+    queryFn: () => fetchStatsTrend(userId!, subject),
     enabled: Boolean(userId),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const summary = summaryQuery.data;
